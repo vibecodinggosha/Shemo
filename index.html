@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>$SHEMO — Sheep'n'Money</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: #000080;
+    background-image: linear-gradient(135deg, #000080 0%, #0000cc 50%, #000080 100%);
+    font-family: "Times New Roman", Times, serif;
+    color: #ffff00;
+    cursor: crosshair;
+    overflow-x: hidden;
+  }
+
+  .stars {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; z-index: 0;
+  }
+  .star {
+    position: absolute; background: #fff; border-radius: 50%;
+    animation: twinkle 2s infinite alternate;
+  }
+  @keyframes twinkle { from { opacity: 0.2; } to { opacity: 1; } }
+
+  .page-wrap {
+    position: relative; z-index: 1;
+    max-width: 780px; margin: 0 auto; padding: 10px;
+  }
+
+  .top-banner {
+    background: linear-gradient(90deg, #ff0000, #ff7700, #ffff00, #00ff00, #0000ff, #8b00ff, #ff0000);
+    background-size: 400% 100%;
+    animation: rainbow 3s linear infinite;
+    text-align: center; padding: 4px;
+    font-size: 11px; font-weight: bold; color: #000; letter-spacing: 1px;
+  }
+  @keyframes rainbow { 0% { background-position: 0% 50%; } 100% { background-position: 400% 50%; } }
+
+  .marquee-wrap {
+    background: #000; border: 2px solid #ffff00;
+    padding: 3px 0; overflow: hidden; white-space: nowrap; margin: 4px 0;
+  }
+  .marquee-inner {
+    display: inline-block; animation: marquee 22s linear infinite;
+    font-size: 13px; color: #00ff00; font-family: "Courier New", monospace; font-weight: bold;
+  }
+  @keyframes marquee { from { transform: translateX(780px); } to { transform: translateX(-100%); } }
+
+  .header-table {
+    width: 100%; border: 3px ridge #c0c0c0; background: #000033; margin: 6px 0;
+  }
+  .header-table td { padding: 8px; vertical-align: middle; }
+
+  .site-title {
+    font-size: 36px; font-weight: bold; color: #ffff00;
+    text-shadow: 3px 3px 0px #ff0000, 6px 6px 0px #800000;
+    font-family: "Times New Roman", serif; line-height: 1.1;
+    animation: blink-color 1.5s step-end infinite;
+  }
+  @keyframes blink-color {
+    0%, 100% { color: #ffff00; } 33% { color: #00ffff; } 66% { color: #ff00ff; }
+  }
+  .subtitle { font-size: 13px; color: #00ff00; font-family: "Courier New", monospace; margin-top: 4px; }
+
+  .sheep-img {
+    width: 180px; height: 180px; object-fit: cover; border: 4px solid #ffff00;
+    animation: img-blink 4s step-end infinite;
+  }
+  @keyframes img-blink {
+    0%, 90%, 100% { border-color: #ffff00; } 93% { border-color: #ff0000; } 96% { border-color: #00ff00; }
+  }
+
+  .content-table { width: 100%; border-collapse: separate; border-spacing: 4px; margin: 4px 0; }
+  .content-table td { vertical-align: top; }
+
+  .panel { background: #000033; border: 2px solid #c0c0c0; padding: 8px; margin-bottom: 6px; }
+  .panel-title {
+    background: linear-gradient(90deg, #000080, #0000ff, #000080);
+    color: #ffff00; font-weight: bold; font-size: 14px;
+    padding: 3px 8px; margin: -8px -8px 8px -8px;
+    border-bottom: 1px solid #c0c0c0; text-transform: uppercase; letter-spacing: 2px;
+  }
+  .panel p { font-size: 13px; color: #ffffff; line-height: 1.6; margin-bottom: 6px; }
+  .panel p b { color: #ffff00; }
+  .panel p i { color: #00ffff; }
+
+  .blink { animation: blink 0.8s step-end infinite; }
+  @keyframes blink { 0%, 100% { visibility: visible; } 50% { visibility: hidden; } }
+
+  .sidebar { width: 200px; }
+
+  /* STATS GRID */
+  .stats-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 6px 0;
+  }
+  .stat-box {
+    background: #000; border: 2px inset #808080; padding: 6px; text-align: center;
+  }
+  .stat-label { font-size: 10px; color: #808080; font-family: "Courier New", monospace; text-transform: uppercase; }
+  .stat-value { font-size: 20px; font-weight: bold; font-family: "Courier New", monospace; color: #00ff00; margin-top: 2px; }
+  .stat-value.yellow { color: #ffff00; }
+  .stat-value.cyan { color: #00ffff; }
+  .stat-value.orange { color: #ff8800; }
+
+  .buy-btn {
+    display: block; width: 100%;
+    background: linear-gradient(180deg, #ffff00, #ff8800);
+    color: #000000; font-weight: bold; font-size: 16px;
+    font-family: "Times New Roman", serif; border: 3px outset #fff;
+    padding: 8px; text-align: center; cursor: pointer; text-decoration: none;
+    margin: 6px 0; letter-spacing: 1px;
+  }
+  .buy-btn:hover { border: 3px inset #fff; filter: brightness(1.2); }
+
+  .contract {
+    background: #000; border: 1px inset #808080; padding: 4px 6px;
+    font-family: "Courier New", monospace; font-size: 9px; color: #00ff00;
+    word-break: break-all; margin: 4px 0;
+  }
+
+  .tg-btn {
+    display: block; width: 100%;
+    background: linear-gradient(180deg, #2aabee, #0088cc);
+    color: #fff; font-weight: bold; font-size: 14px;
+    font-family: "Times New Roman", serif; border: 3px outset #fff;
+    padding: 7px; text-align: center; cursor: pointer; text-decoration: none; margin: 6px 0;
+  }
+  .tg-btn:hover { border: 3px inset #fff; }
+
+  .dex-btn {
+    display: block; width: 100%;
+    background: linear-gradient(180deg, #1a6b1a, #0d4d0d);
+    color: #00ff00; font-weight: bold; font-size: 12px;
+    font-family: "Courier New", monospace; border: 3px outset #888;
+    padding: 5px; text-align: center; cursor: pointer; text-decoration: none; margin: 4px 0;
+  }
+  .dex-btn:hover { border: 3px inset #888; }
+
+  .pixel-divider {
+    height: 6px;
+    background: repeating-linear-gradient(90deg,
+      #ff0000 0px, #ff0000 6px, #ff7700 6px, #ff7700 12px,
+      #ffff00 12px, #ffff00 18px, #00ff00 18px, #00ff00 24px,
+      #0000ff 24px, #0000ff 30px, #8b00ff 30px, #8b00ff 36px);
+    margin: 6px 0;
+  }
+
+  .coin-spin {
+    display: inline-block; animation: spin3d 2s linear infinite; font-size: 24px;
+  }
+  @keyframes spin3d {
+    0% { transform: scaleX(1); } 25% { transform: scaleX(0); }
+    50% { transform: scaleX(1); } 75% { transform: scaleX(0); } 100% { transform: scaleX(1); }
+  }
+
+  .footer {
+    background: #000033; border-top: 3px ridge #c0c0c0;
+    text-align: center; padding: 8px; margin-top: 8px; font-size: 11px; color: #808080;
+  }
+  .footer a { color: #00ffff; }
+
+  /* LISTED badge */
+  .listed-badge {
+    display: inline-block; background: #00aa00; color: #fff;
+    font-size: 11px; font-weight: bold; font-family: "Courier New", monospace;
+    padding: 2px 8px; border: 1px solid #00ff00; letter-spacing: 1px;
+    animation: blink 1.2s step-end infinite;
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="page-wrap">
+
+  <div class="top-banner">★ OFFICIAL WEBSITE — SHEEP'N'MONEY $SHEMO — TON BLOCKCHAIN — LISTED ON DEDUST ★</div>
+
+  <div class="marquee-wrap">
+    <span class="marquee-inner">
+      🐑 $SHEMO — Sheep'n'Money &nbsp;&nbsp;&nbsp; 🏦 TON Blockchain &nbsp;&nbsp;&nbsp; ✅ ЗАБОНДИЛСЯ! ТОРГУЕТСЯ НА DEDUST &nbsp;&nbsp;&nbsp; 💧 Liquidity: $2.7K &nbsp;&nbsp;&nbsp; 📊 FDV: $5.6K &nbsp;&nbsp;&nbsp; 🔗 Telegram: t.me/+sjll4zqaLA80NzIy &nbsp;&nbsp;&nbsp; 🐑 $SHEMO — Sheep'n'Money &nbsp;&nbsp;&nbsp;
+    </span>
+  </div>
+
+  <!-- HEADER -->
+  <table class="header-table" cellpadding="0" cellspacing="0">
+    <tr>
+      <td width="190">
+        <img src="IMG_6031.JPG" alt="Sheep'n'Money" class="sheep-img" />
+      </td>
+      <td>
+        <div class="site-title">$SHEMO</div>
+        <div class="site-title" style="font-size:22px; animation-delay:0.5s;">Sheep'n'Money</div>
+        <div class="subtitle">— на блокчейне TON —</div>
+        <br>
+        <div style="font-size:12px; color:#c0c0ff;">
+          DEX: <b style="color:#ffff00;">DeDust</b><br>
+          Supply: <b style="color:#00ff00;">1,000,000,000 $SHEMO</b><br>
+          <span class="listed-badge">✅ LISTED</span>
+        </div>
+      </td>
+      <td width="130" style="text-align:center;">
+        <div class="coin-spin">🪙</div>
+        <div class="coin-spin" style="animation-delay:0.5s;">🪙</div>
+        <div class="coin-spin" style="animation-delay:1s;">🪙</div>
+        <br>
+        <div style="font-size:10px; color:#808080; margin-top:6px; font-family:'Courier New',monospace;">TON / DeDust</div>
+      </td>
+    </tr>
+  </table>
+
+  <div class="pixel-divider"></div>
+
+  <!-- MAIN LAYOUT -->
+  <table class="content-table" cellpadding="0" cellspacing="4">
+    <tr>
+      <td class="main-col">
+
+        <!-- STATS -->
+        <div class="panel">
+          <div class="panel-title">📊 LIVE STATS — DEXSCREENER</div>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div class="stat-label">Price USD</div>
+              <div class="stat-value" style="font-size:14px;">$0.000005698</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Price TON</div>
+              <div class="stat-value" style="font-size:14px; color:#00ffff;">0.053383</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Liquidity</div>
+              <div class="stat-value yellow">$2.7K</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">FDV / Mkt Cap</div>
+              <div class="stat-value orange">$5.6K</div>
+            </div>
+          </div>
+          <a href="https://t.me/dtrade?start=main_EQAOt3qz_dxfWq-7mAJid11wzTtWOnhgq092-kThXL_pzueL" class="buy-btn">🐑 КУПИТЬ $SHEMO ЧЕРЕЗ @DTRADE 🌙</a>
+          <a href="https://dedust.io/swap" class="dex-btn">🔄 Торговать на DeDust</a>
+        </div>
+
+        <!-- ABOUT -->
+        <div class="panel">
+          <div class="panel-title">🐏 ЧТО ТАКОЕ SHEMO?</div>
+          <p>
+            <b>$SHEMO</b> (Sheep'n'Money) — мем-токен на блокчейне <b>TON</b>.
+          </p>
+          <p>
+            Баран с золотыми слитками и мешками денег — это не просто картинка. Это <i>идея</i>: даже овцы умеют зарабатывать.
+          </p>
+          <p>
+            Токен торгуется на <b>DeDust</b> — децентрализованной бирже TON.
+          </p>
+          <p style="color:#ff8800; font-size:11px;">⚠ Это мем-токен. Не является финансовым советом. DYOR.</p>
+        </div>
+
+        <!-- HOW TO BUY -->
+        <div class="panel">
+          <div class="panel-title">💰 КАК КУПИТЬ $SHEMO</div>
+          <p><b>Шаг 1:</b> Установи кошелёк <i>Tonkeeper</i> или <i>MyTonWallet</i></p>
+          <p><b>Шаг 2:</b> Купи TON на бирже и переведи в кошелёк</p>
+          <p><b>Шаг 3:</b> Нажми кнопку ниже — откроется бот <i>@dtrade</i> для покупки</p>
+          <p><b>Шаг 4:</b> Или торгуй напрямую на DeDust</p>
+          <div class="contract">CA: EQAOt3qz_dxfWq-7mAJid11wzTtWOnhgq092-kThXL_pzueL</div>
+          <a href="https://t.me/dtrade?start=main_EQAOt3qz_dxfWq-7mAJid11wzTtWOnhgq092-kThXL_pzueL" class="buy-btn">🛒 Купить $SHEMO через @dtrade</a>
+          <a href="https://dedust.io/swap" class="dex-btn">🔄 DeDust — торговать напрямую</a>
+          <a href="https://t.me/+sjll4zqaLA80NzIy" class="tg-btn">📱 Telegram-чат $SHEMO</a>
+        </div>
+
+      </td>
+
+      <!-- SIDEBAR -->
+      <td class="sidebar">
+
+        <div class="panel">
+          <div class="panel-title" style="font-size:10px;">КОНТРАКТ</div>
+          <div style="font-size:9px; color:#00ff00; font-family:'Courier New',monospace; word-break:break-all; line-height:1.6;">
+            EQAOt3qz_dxfWq-7mAJid11wzTtWOnhgq092-kThXL_pzueL
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title" style="font-size:10px;">ЦЕНА</div>
+          <div style="font-family:'Courier New',monospace; text-align:center;">
+            <div style="font-size:11px; color:#00ff00; word-break:break-all;">$0.000005698</div>
+            <div style="font-size:10px; color:#808080; margin-top:4px;">0.053383 TON</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title" style="font-size:10px;">МАРКЕТ</div>
+          <div style="font-size:11px; color:#00ff00; font-family:'Courier New',monospace; line-height:2.2;">
+            Liq: <b style="color:#ffff00;">$2.7K</b><br>
+            FDV: <b style="color:#ff8800;">$5.6K</b><br>
+            DEX: <b style="color:#00ffff;">DeDust</b>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title" style="font-size:10px;">ССЫЛКИ</div>
+          <div style="font-size:12px; line-height:2.4;">
+            <a href="https://t.me/+sjll4zqaLA80NzIy" style="color:#2aabee; text-decoration:none;">📱 Telegram</a><br>
+            <a href="https://dexscreener.com/ton/EQDgflmxUYVhfuSuqFamrr5-gIKrnw7SY30drFnn67m8fxo6" style="color:#00ff00; text-decoration:none;">📊 DexScreener</a><br>
+            <a href="https://dedust.io/swap" style="color:#ff8800; text-decoration:none;">🔄 DeDust</a>
+          </div>
+        </div>
+
+      </td>
+    </tr>
+  </table>
+
+  <div class="pixel-divider"></div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div style="margin-bottom:6px;">
+      ☆☆☆ <b style="color:#ffff00;">$SHEMO — Sheep'n'Money</b> ☆☆☆
+    </div>
+    <div style="margin-bottom:6px; font-family:'Courier New',monospace; font-size:9px; color:#00ff00;">
+      EQAOt3qz_dxfWq-7mAJid11wzTtWOnhgq092-kThXL_pzueL
+    </div>
+    <div style="margin-bottom:6px;">
+      <a href="https://t.me/+sjll4zqaLA80NzIy">Telegram</a> |
+      <a href="https://dexscreener.com/ton/EQDgflmxUYVhfuSuqFamrr5-gIKrnw7SY30drFnn67m8fxo6">DexScreener</a> |
+      <a href="https://dedust.io/swap">DeDust</a>
+    </div>
+    <div style="color:#ff8800; font-size:10px;">
+      ⚠ Мем-токен. Не является финансовым советом. Криптовалюта несёт риски. DYOR.
+    </div>
+    <br>
+    <div style="font-size:20px; letter-spacing:4px;">🐑🪙🐑🪙🐑🪙🐑🪙🐑</div>
+  </div>
+
+</div>
+
+<script>
+  // Stars
+  const sc = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const sz = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*3}s;animation-duration:${1.5+Math.random()*2}s;`;
+    sc.appendChild(s);
+  }
+
+  // Tab blink
+  let t = false;
+  setInterval(() => {
+    document.title = t ? "$SHEMO — Sheep'n'Money" : '🐑 $SHEMO listed on DeDust!';
+    t = !t;
+  }, 1500);
+</script>
+
+</body>
+</html>
